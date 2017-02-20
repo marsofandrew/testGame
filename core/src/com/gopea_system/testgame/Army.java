@@ -1,5 +1,6 @@
 package com.gopea_system.testgame;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,7 +51,7 @@ public class Army {
                 texturearm = new Texture("irregular.png");
                 break;
             case 1:
-
+                texturearm = new Texture("horse.png");
                 break;
         }
     }
@@ -174,8 +175,10 @@ public class Army {
         return Ust;
     }
 
-    public void draw(Batch b) {
+    public void draw(Batch b, Camera camera) {
         SpriteBatch sb = new SpriteBatch();
+        camera.update();
+        sb.setProjectionMatrix(camera.combined);
         b.end();
         sb.begin();
         sb.draw(texturearm, rect.x, rect.y);

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class TestGameClass extends ApplicationAdapter {
@@ -48,13 +49,19 @@ public class TestGameClass extends ApplicationAdapter {
             enemysArmy[i] = new ArrayList<Army>();
         }
 
-        create_buttons();
+        create_buttons(new ArrayList<Integer>(Arrays.asList(0,1)));
         Gdx.input.setInputProcessor(new GestureDetector(new MGListener()));
     }
 
-    public void create_buttons() {
-        button.add(new MyButton("birr.png", 400, 740, 80, 60));
-        button.add(new MyButton("blkavalery.png", 400, 678, 80, 60));
+    public void create_buttons(ArrayList<Integer> arrIndex) {
+        MyButton butMassive[] = new MyButton[2];
+        butMassive[0] = new MyButton(0, "birr.png", 400, 740, 80, 60);
+        butMassive[1] = new MyButton(1, "blkavalery.png", 400, 678, 80, 60);
+        for (int i : arrIndex) {
+            if (i >= 0 & i < butMassive.length) {
+                button.add(butMassive[i]);
+            }
+        }
     }
 
     @Override
@@ -70,16 +77,16 @@ public class TestGameClass extends ApplicationAdapter {
         font.draw(batch, "coins = " + Coins, 10, 40);
         batch.draw(background, 0, 40);
         for (int i = 0; i < button.size; i++) {
-           button.get(i).draw(batch);
+            button.get(i).draw(batch,camera);
         }
 
         for (int i = 0; i < 4; i++) {
             try {
                 for (int j = 0; j < playersArmy[i].size(); j++) {
-                    playersArmy[i].get(j).draw(batch);
+                    playersArmy[i].get(j).draw(batch,camera);
                 }
                 for (int j = 0; j < enemysArmy[i].size(); j++) {
-                    enemysArmy[i].get(j).draw(batch);
+                    enemysArmy[i].get(j).draw(batch,camera);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -105,8 +112,8 @@ public class TestGameClass extends ApplicationAdapter {
         }
         moveArmys(playersArmy, true); // move player's army
         moveArmys(enemysArmy, false); // move enemy's army
-        removeArmys(playersArmy,true);
-        removeArmys(enemysArmy,false);
+        removeArmys(playersArmy, true);
+        removeArmys(enemysArmy, false);
     }
 
     public void createPlayersArmy(Vector3 posT) {
@@ -174,7 +181,7 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i = 0; i < but.size; i++) {
 
             if (but.get(i).button_pressed) {
-                b = i;
+                b = but.get(i).index;
             }
         }
         if (b < 0) {
@@ -202,19 +209,15 @@ public class TestGameClass extends ApplicationAdapter {
             Gdx.app.log("My tag", "CAmera don't moved " + camera.position.y);
             y = 0;
         }
-        if (camera.position.y + y > 1000  & y > 0) {
+        if (camera.position.y + y > 1000 & y > 0) {
             Gdx.app.log("My tag", "CAmera don't moved " + camera.position.y);
             y = 0;
         }
         Gdx.app.log("My tag", "Camera y = " + camera.position.y);
         camera.translate(0, y);
-        for (int i =0 ;i<4;i++) {
-            for (int j = 0; j < playersArmy[i].size(); j++) {
-                playersArmy[i].get(j).rect.y -= y;
-            }
-            for (int j = 0; j < enemysArmy[i].size(); j++) {
-                enemysArmy[i].get(j).rect.y -= y; // не уверен
-            }
+
+        for (int i=0;i<button.size;i++){
+            button.get(i).y +=y;
         }
     }
 
@@ -239,7 +242,8 @@ public class TestGameClass extends ApplicationAdapter {
         batch.dispose();
         background.dispose();
     }
-    public class MGListener implements GestureDetector.GestureListener{
+
+    public class MGListener implements GestureDetector.GestureListener {
 
         @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
@@ -267,8 +271,8 @@ public class TestGameClass extends ApplicationAdapter {
 
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
-            Gdx.app.log("My tag","pan y  = " +y + " delta y = "+deltaY );
-             movePole(deltaY/4);
+            Gdx.app.log("My tag", "pan y  = " + y + " delta y = " + deltaY);
+            movePole(deltaY / 4);
             return false;
         }
 

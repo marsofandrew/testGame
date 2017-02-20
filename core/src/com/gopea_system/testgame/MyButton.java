@@ -1,6 +1,7 @@
 package com.gopea_system.testgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -23,8 +24,9 @@ public class MyButton {
     Drawable drawable;
     ImageButton IButton;
     boolean button_pressed = false;
+    int index;
 
-    public MyButton(String fileName, float x, float y, float widht, float height) {
+    public MyButton(int index,String fileName, float x, float y, float widht, float height) {
         butTexture = new Texture(fileName);
         // special not very good work
         drawable = new TextureRegionDrawable(new TextureRegion(butTexture));
@@ -35,6 +37,7 @@ public class MyButton {
         this.y = y;
         this.widht = widht;
         this.height = height;
+        this.index = index;
         makeRect();
         setLocation();
     }
@@ -77,8 +80,10 @@ public class MyButton {
         return click;
     }
 
-    public void draw(Batch b) {
+    public void draw(Batch b, Camera camera) {
         SpriteBatch sb = new SpriteBatch();
+        camera.update();
+        sb.setProjectionMatrix(camera.combined);
         b.end();
         sb.begin();
         sb.draw(butTexture, x, y);
