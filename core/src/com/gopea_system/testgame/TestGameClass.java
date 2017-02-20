@@ -70,16 +70,16 @@ public class TestGameClass extends ApplicationAdapter {
         font.draw(batch, "coins = " + Coins, 10, 40);
         batch.draw(background, 0, 40);
         for (int i = 0; i < button.size; i++) {
-            batch.draw(button.get(i).butTexture, button.get(i).x, button.get(i).y);
+           button.get(i).draw(batch);
         }
 
         for (int i = 0; i < 4; i++) {
             try {
                 for (int j = 0; j < playersArmy[i].size(); j++) {
-                    batch.draw(playersArmy[i].get(j).texturearm, (10 + i * 100), playersArmy[i].get(j).rect.y);
+                    playersArmy[i].get(j).draw(batch);
                 }
                 for (int j = 0; j < enemysArmy[i].size(); j++) {
-                    batch.draw(enemysArmy[i].get(j).texturearm, (10 + i * 100), enemysArmy[i].get(j).rect.y);
+                    enemysArmy[i].get(j).draw(batch);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -208,10 +208,14 @@ public class TestGameClass extends ApplicationAdapter {
         }
         Gdx.app.log("My tag", "Camera y = " + camera.position.y);
         camera.translate(0, y);
-        for (int i = 0; i < button.size; i++) {
-            button.get(i).y += y;
+        for (int i =0 ;i<4;i++) {
+            for (int j = 0; j < playersArmy[i].size(); j++) {
+                playersArmy[i].get(j).rect.y -= y;
+            }
+            for (int j = 0; j < enemysArmy[i].size(); j++) {
+                enemysArmy[i].get(j).rect.y -= y; // не уверен
+            }
         }
-
     }
 
     public void removeArmys(ArrayList<Army>[] arm, boolean isPlayers) {

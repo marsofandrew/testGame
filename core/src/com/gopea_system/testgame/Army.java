@@ -1,6 +1,7 @@
 package com.gopea_system.testgame;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -14,7 +15,7 @@ public class Army {
     int Level_of_army, typearm;
     double soldatType, serjantType, officerType, soldatTypedisc;
     double tecnologies_bonus;
-   float speed;
+    float speed;
     Rectangle rect = new Rectangle();
 
     Texture texturearm;
@@ -22,7 +23,7 @@ public class Army {
     /*
     Standart army = 35 (30 soldat, 3(4) - serjant, 1(2) - officer)
      */
-    public Army( int typearm, int soldat, int serjant, int officer, int level_of_army, double tecnologies_bonus, double soldatType, double soldatTypedisc, double serjantType, double officerType, float speed) {
+    public Army(int typearm, int soldat, int serjant, int officer, int level_of_army, double tecnologies_bonus, double soldatType, double soldatTypedisc, double serjantType, double officerType, float speed) {
         this.typearm = typearm;
         this.soldat = soldat;
         this.serjant = serjant;
@@ -48,7 +49,7 @@ public class Army {
             case 0:
                 texturearm = new Texture("irregular.png");
                 break;
-            case 1 :
+            case 1:
 
                 break;
         }
@@ -62,16 +63,17 @@ public class Army {
         this.rect.y = y;
     }
 
-    public void setSpeed(float speed1){
+    public void setSpeed(float speed1) {
         this.speed = speed1;
     }
+
     public float getX() {
-        float t =  this.rect.x;
+        float t = this.rect.x;
         return t;
     }
 
     public float getY() {
-        float t =  this.rect.y;
+        float t = this.rect.y;
         return t;
     }
 
@@ -170,5 +172,14 @@ public class Army {
              */
         }
         return Ust;
+    }
+
+    public void draw(Batch b) {
+        SpriteBatch sb = new SpriteBatch();
+        b.end();
+        sb.begin();
+        sb.draw(texturearm, rect.x, rect.y);
+        sb.end();
+        b.begin();
     }
 }
