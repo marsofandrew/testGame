@@ -24,7 +24,7 @@ public class TestGameClass extends ApplicationAdapter {
     BitmapFont font;
     OrthographicCamera camera;
     Array<MyButton> button = new Array<MyButton>();
-
+    MyButton butCanceled;
     ArrayList<Army>[] playersArmy;
     ArrayList<Army>[] enemysArmy;
     int Coins = 100;
@@ -48,15 +48,15 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i = 0; i < 4; i++) {
             enemysArmy[i] = new ArrayList<Army>();
         }
-
+        butCanceled = new MyButton(-1,"bcancel.png","bcancel.png",400,0,80,60,0);
         create_buttons(new ArrayList<Integer>(Arrays.asList(0,1)));
         Gdx.input.setInputProcessor(new GestureDetector(new MGListener()));
     }
 
     public void create_buttons(ArrayList<Integer> arrIndex) {
         MyButton butMassive[] = new MyButton[2];
-        butMassive[0] = new MyButton(0, "birr.png", 400, 740, 80, 60);
-        butMassive[1] = new MyButton(1, "blkavalery.png", 400, 678, 80, 60);
+        butMassive[0] = new MyButton(0, "birr.png","birron.png", 400, 740, 80, 60,5);
+        butMassive[1] = new MyButton(1, "blkavalery.png","blkavaleryon.png", 400, 678, 80, 60,10);
         for (int i : arrIndex) {
             if (i >= 0 & i < butMassive.length) {
                 button.add(butMassive[i]);
@@ -92,12 +92,20 @@ public class TestGameClass extends ApplicationAdapter {
                 e.printStackTrace();
             }
         }
-
+        butCanceled.draw(batch,camera);
         batch.end();
-
+        if (butCanceled.isClick(camera,100)){
+            int i = getClicButton(button);
+            if (i>=0){
+                button.get(i).deselect();
+                butCanceled.deselect();
+            }else{
+                Gdx.app.log("My tag","No button pressed");
+            }
+        }
         for (int i = 0; i < button.size; i++) {
             if (canbeclicked(button)) {
-                button.get(i).isClick(camera);
+                button.get(i).isClick(camera,Coins);
 
             }
             if (Gdx.input.isTouched()) {
@@ -117,19 +125,11 @@ public class TestGameClass extends ApplicationAdapter {
     }
 
     public void createPlayersArmy(Vector3 posT) {
-        int price = 0;
+
         int butclick = getClicButton(button);
 
-        switch (butclick) {
-            case 0:
-                price = 5;
-                break;
-            case 1:
-                price = 10;
-                break;
-        }
-        if (Coins - price >= 0) {
-            Coins -= price;
+        if (Coins - button.get(butclick).price >= 0) {
+            Coins -= button.get(butclick).price;
             playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1, 100));
             int length = playersArmy[get_Line(posT.x)].size();
             playersArmy[get_Line(posT.x)].get(length - 1).rect.x = get_Line(posT.x) * 100 + 10;
@@ -138,7 +138,7 @@ public class TestGameClass extends ApplicationAdapter {
             playersArmy[get_Line(posT.x)].get(length - 1).rect.height = 60;
 
         }
-        button.get(butclick).button_pressed = false;
+        button.get(butclick).deselect();
     }
 
     public boolean canbeclicked(Array<MyButton> but) {
@@ -219,6 +219,7 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i=0;i<button.size;i++){
             button.get(i).y +=y;
         }
+        butCanceled.y +=y;
     }
 
     public void removeArmys(ArrayList<Army>[] arm, boolean isPlayers) {
