@@ -28,6 +28,7 @@ public class MyButton {
     boolean button_pressed = false;
     int index;
     double price;
+    boolean isShow = true;
 
     public MyButton(int index, String fileName, String fileNameon, float x, float y, float widht, float height, double price) {
         butTextureN = new Texture(fileName);
@@ -45,6 +46,9 @@ public class MyButton {
         this.index = index;
         makeRect();
         setLocation();
+    }
+    public void setiIShow (boolean show) {
+        isShow = show;
     }
 
     public void makeRect() {
@@ -92,7 +96,9 @@ public class MyButton {
         sb.setProjectionMatrix(camera.combined);
         b.end();
         sb.begin();
-        sb.draw(butTexture, x, y);
+        if (isShow) {
+            sb.draw(butTexture, x, y);
+        }
         sb.end();
         b.begin();
 

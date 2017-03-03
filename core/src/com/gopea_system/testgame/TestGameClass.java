@@ -26,17 +26,17 @@ public class TestGameClass extends ApplicationAdapter {
     Array<MyButton> button = new Array<MyButton>();
     MyButton butCanceled;
     ArrayList<Army>[] playersArmy;
-    ArrayList<Army>[] enemysArmy;
+    Enemy enem;
     int Coins = 100;
-
+    int level = 0;//test remove later
 
     @Override
 
     public void create() {
+        enem = new Enemy(level);
         font = new BitmapFont();
         stage = new Stage();
         playersArmy = new ArrayList[4];
-        enemysArmy = new ArrayList[4];
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
         batch = new SpriteBatch();
@@ -45,18 +45,17 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i = 0; i < 4; i++) {
             playersArmy[i] = new ArrayList<Army>();
         }
-        for (int i = 0; i < 4; i++) {
-            enemysArmy[i] = new ArrayList<Army>();
-        }
-        butCanceled = new MyButton(-1,"bcancel.png","bcancel.png",400,0,80,60,0);
-        create_buttons(new ArrayList<Integer>(Arrays.asList(0,1)));
+
+        butCanceled = new MyButton(-1, "bcancel.png", "bcancel.png", 400, 0, 80, 60, 0);
+        butCanceled.setiIShow(false);
+        create_buttons(new ArrayList<Integer>(Arrays.asList(0, 1)));
         Gdx.input.setInputProcessor(new GestureDetector(new MGListener()));
     }
 
     public void create_buttons(ArrayList<Integer> arrIndex) {
         MyButton butMassive[] = new MyButton[2];
-        butMassive[0] = new MyButton(0, "birr.png","birron.png", 400, 740, 80, 60,5);
-        butMassive[1] = new MyButton(1, "blkavalery.png","blkavaleryon.png", 400, 678, 80, 60,10);
+        butMassive[0] = new MyButton(0, "birr.png", "birron.png", 400, 740, 80, 60, 5);
+        butMassive[1] = new MyButton(1, "blkavalery.png", "blkavaleryon.png", 400, 678, 80, 60, 10);
         for (int i : arrIndex) {
             if (i >= 0 & i < butMassive.length) {
                 button.add(butMassive[i]);
@@ -77,36 +76,36 @@ public class TestGameClass extends ApplicationAdapter {
         font.draw(batch, "coins = " + Coins, 10, 40);
         batch.draw(background, 0, 40);
         for (int i = 0; i < button.size; i++) {
-            button.get(i).draw(batch,camera);
+            button.get(i).draw(batch, camera);
         }
 
         for (int i = 0; i < 4; i++) {
             try {
                 for (int j = 0; j < playersArmy[i].size(); j++) {
-                    playersArmy[i].get(j).draw(batch,camera);
+                    playersArmy[i].get(j).draw(batch, camera);
                 }
-                for (int j = 0; j < enemysArmy[i].size(); j++) {
-                    enemysArmy[i].get(j).draw(batch,camera);
-                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        butCanceled.draw(batch,camera);
+        enem.draw(batch,camera);
+
+        butCanceled.draw(batch, camera);
         batch.end();
-        if (butCanceled.isClick(camera,100)){
+        if (butCanceled.isClick(camera, 100)) {
             int i = getClicButton(button);
-            if (i>=0){
+            if (i >= 0) {
                 button.get(i).deselect();
+                butCanceled.setiIShow(false);
                 butCanceled.deselect();
-            }else{
-                Gdx.app.log("My tag","No button pressed");
+            } else {
+                Gdx.app.log("My tag", "No button pressed");
             }
         }
         for (int i = 0; i < button.size; i++) {
             if (canbeclicked(button)) {
-                button.get(i).isClick(camera,Coins);
-
+                button.get(i).isClick(camera, Coins);
             }
             if (Gdx.input.isTouched()) {
                 Vector3 posT = new Vector3();
@@ -119,9 +118,9 @@ public class TestGameClass extends ApplicationAdapter {
             }
         }
         moveArmys(playersArmy, true); // move player's army
-        moveArmys(enemysArmy, false); // move enemy's army
+        moveArmys(enem.enemysArmy, false); // move enemy's army
         removeArmys(playersArmy, true);
-        removeArmys(enemysArmy, false);
+        removeArmys(enem.enemysArmy, false);
     }
 
     public void createPlayersArmy(Vector3 posT) {
@@ -151,6 +150,9 @@ public class TestGameClass extends ApplicationAdapter {
             } else {
                 can = true;
             }
+        }
+        if (!can) {
+            butCanceled.setiIShow(true);
         }
         return can;
     }
@@ -216,10 +218,10 @@ public class TestGameClass extends ApplicationAdapter {
         Gdx.app.log("My tag", "Camera y = " + camera.position.y);
         camera.translate(0, y);
 
-        for (int i=0;i<button.size;i++){
-            button.get(i).y +=y;
+        for (int i = 0; i < button.size; i++) {
+            button.get(i).y += y;
         }
-        butCanceled.y +=y;
+        butCanceled.y += y;
     }
 
     public void removeArmys(ArrayList<Army>[] arm, boolean isPlayers) {
