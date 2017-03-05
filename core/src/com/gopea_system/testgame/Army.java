@@ -24,7 +24,8 @@ public class Army {
     /*
     Standart army = 35 (30 soldat, 3(4) - serjant, 1(2) - officer)
      */
-    public Army(int typearm, int soldat, int serjant, int officer, int level_of_army, double tecnologies_bonus, double soldatType, double soldatTypedisc, double serjantType, double officerType, float speed) {
+    public Army(int typearm, int soldat, int serjant, int officer, int level_of_army, double tecnologies_bonus,
+                double soldatType, double soldatTypedisc, double serjantType, double officerType, float speed) {
         this.typearm = typearm;
         this.soldat = soldat;
         this.serjant = serjant;
@@ -40,8 +41,6 @@ public class Army {
         rect.width = 80;
         rect.height = 60;
         setTexturearm();
-
-
     }
 
 

@@ -4,28 +4,88 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 /**
  * Created by Андрей on 24.02.2017.
  */
 
 public class Enemy {
+    double profit = 0.5;
+    double Money;
+    double tech_bonus = 1;
     ArrayList<Army>[] enemysArmy;
     int level;
-    public Enemy(int levvel){
+
+    public Enemy(int levvel) {
         this.level = levvel;
         enemysArmy = new ArrayList[4];
         for (int i = 0; i < 4; i++) {
             enemysArmy[i] = new ArrayList<Army>();
         }
     }
-public void draw(Batch batch, OrthographicCamera camera) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < enemysArmy[i].size(); j++) {
-            enemysArmy[i].get(j).draw(batch, camera);
+
+    public void draw(Batch batch, OrthographicCamera camera) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < enemysArmy[i].size(); j++) {
+                enemysArmy[i].get(j).draw(batch, camera);
+            }
         }
     }
-}
 
+    public void createArmy(int line, int type, int soldat, int serjant, int officer, float speed) {
+        enemysArmy[line].add(new Army(type, soldat, serjant, officer, countLevelOfArmy(), tech_bonus, countSoldatType(),
+                countSoldatDiscType(), countSerjantType(), countOfficerType(), speed));
+        int length = enemysArmy[line].size();
+        enemysArmy[line].get(length - 1).setX(10 + line * 100);
+        enemysArmy[line].get(length - 1).setY(1360);
+    }
+
+    public int countLevelOfArmy() {
+        int cL = -1;
+        if (level <= 5) cL = 1;
+        if (level > 5 & level <= 10) cL = 2;
+        if (level > 10 & level < 15) cL = 3;
+        if ((level >= 15) & (level <= 17)) cL = 4;
+        if ((level >= 18) & (level <= 20)) cL = 5;
+        if ((level >= 21) & (level <= 23)) cL = 6;
+        if ((level >= 24) & (level <= 26)) cL = 7;
+        if ((level >= 27) & (level <= 29)) cL = 8;
+        if ((level >= 30) & (level <= 31)) cL = 9;
+        if ((level >= 32) & (level <= 35)) cL = 10;
+        if (level > 35) cL = 10 + level - 35;
+
+        return cL;
+    }
+
+    public double countSoldatType() {
+        double r = 1;
+        //write
+        return r;
+    }
+
+    public double countSerjantType() {
+        double r = 1;
+        //write
+        return r;
+    }
+
+    public double countOfficerType() {
+        double r = 1;
+        //write
+        return r;
+    }
+
+    public double countSoldatDiscType() {
+        double r = 1;
+        //write
+        return r;
+    }
+
+    public void addMoney() {
+        Money += profit;
+    }
+
+    public void makeArmy(){
+
+    }
 }

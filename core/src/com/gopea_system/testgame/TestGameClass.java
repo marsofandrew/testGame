@@ -25,26 +25,26 @@ public class TestGameClass extends ApplicationAdapter {
     OrthographicCamera camera;
     Array<MyButton> button = new Array<MyButton>();
     MyButton butCanceled;
-    ArrayList<Army>[] playersArmy;
+    Player player;
     Enemy enem;
-    int Coins = 100;
+    double Coins = 100;
+    double profit;
     int level = 0;//test remove later
 
     @Override
 
     public void create() {
+        player = new Player();
         enem = new Enemy(level);
         font = new BitmapFont();
         stage = new Stage();
-        playersArmy = new ArrayList[4];
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
         batch = new SpriteBatch();
         background = new Texture("background1.png");
 
-        for (int i = 0; i < 4; i++) {
-            playersArmy[i] = new ArrayList<Army>();
-        }
+
 
         butCanceled = new MyButton(-1, "bcancel.png", "bcancel.png", 400, 0, 80, 60, 0);
         butCanceled.setiIShow(false);
@@ -78,17 +78,8 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i = 0; i < button.size; i++) {
             button.get(i).draw(batch, camera);
         }
+                player.draw(batch,camera);
 
-        for (int i = 0; i < 4; i++) {
-            try {
-                for (int j = 0; j < playersArmy[i].size(); j++) {
-                    playersArmy[i].get(j).draw(batch, camera);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         enem.draw(batch,camera);
 
         butCanceled.draw(batch, camera);
@@ -117,9 +108,9 @@ public class TestGameClass extends ApplicationAdapter {
 
             }
         }
-        moveArmys(playersArmy, true); // move player's army
+        moveArmys(player.playersArmy, true); // move player's army
         moveArmys(enem.enemysArmy, false); // move enemy's army
-        removeArmys(playersArmy, true);
+        removeArmys(player.playersArmy, true);
         removeArmys(enem.enemysArmy, false);
     }
 
@@ -129,12 +120,11 @@ public class TestGameClass extends ApplicationAdapter {
 
         if (Coins - button.get(butclick).price >= 0) {
             Coins -= button.get(butclick).price;
-            playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1, 100));
-            int length = playersArmy[get_Line(posT.x)].size();
-            playersArmy[get_Line(posT.x)].get(length - 1).rect.x = get_Line(posT.x) * 100 + 10;
-            playersArmy[get_Line(posT.x)].get(length - 1).rect.y = 40;
-            playersArmy[get_Line(posT.x)].get(length - 1).rect.width = 80;
-            playersArmy[get_Line(posT.x)].get(length - 1).rect.height = 60;
+            player.playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1, 100));
+            int length = player.playersArmy[get_Line(posT.x)].size();
+            player.playersArmy[get_Line(posT.x)].get(length - 1).rect.x = get_Line(posT.x) * 100 + 10;
+            player.playersArmy[get_Line(posT.x)].get(length - 1).rect.y = 40;
+           butCanceled.setiIShow(false);
 
         }
         button.get(butclick).deselect();
