@@ -30,7 +30,7 @@ public class TestGameClass extends ApplicationAdapter {
     double Coins = 100;
     double profit;
     int level = 0;//test remove later
-
+    ConstantOfArmys cofArm = new ConstantOfArmys();
     @Override
 
     public void create() {
@@ -75,6 +75,8 @@ public class TestGameClass extends ApplicationAdapter {
         batch.begin();
         font.draw(batch, "coins = " + Coins, 10, 40);
         batch.draw(background, 0, 40);
+
+        createEnemyArmy(Gdx.graphics.getDeltaTime());
         for (int i = 0; i < button.size; i++) {
             button.get(i).draw(batch, camera);
         }
@@ -113,17 +115,20 @@ public class TestGameClass extends ApplicationAdapter {
         removeArmys(player.playersArmy, true);
         removeArmys(enem.enemysArmy, false);
     }
-
+    public void createEnemyArmy(double dt){
+        enem.setTimeToGenerate(dt);
+        enem.makeArmy(player.playersArmy);
+    }
     public void createPlayersArmy(Vector3 posT) {
 
         int butclick = getClicButton(button);
 
         if (Coins - button.get(butclick).price >= 0) {
             Coins -= button.get(butclick).price;
-            player.playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1, 100));
+            player.playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1,cofArm.ArmysSpeed.get(butclick)));
             int length = player.playersArmy[get_Line(posT.x)].size();
-            player.playersArmy[get_Line(posT.x)].get(length - 1).rect.x = get_Line(posT.x) * 100 + 10;
-            player.playersArmy[get_Line(posT.x)].get(length - 1).rect.y = 40;
+            player.playersArmy[get_Line(posT.x)].get(length - 1).setX(get_Line(posT.x) * 100 + 10);
+            player.playersArmy[get_Line(posT.x)].get(length - 1).setY(40);
            butCanceled.setiIShow(false);
 
         }
@@ -265,7 +270,7 @@ public class TestGameClass extends ApplicationAdapter {
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Gdx.app.log("My tag", "pan y  = " + y + " delta y = " + deltaY);
-            movePole(deltaY / 4);
+            movePole((float)(deltaY /1.5));
             return false;
         }
 

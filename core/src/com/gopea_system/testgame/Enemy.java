@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Андрей on 24.02.2017.
@@ -14,7 +15,12 @@ public class Enemy {
     double Money;
     double tech_bonus = 1;
     ArrayList<Army>[] enemysArmy;
+    int maxtypeofArmy = 1;
+    double timeBetweenGenerate = 2;
+    double timeToGenerate[] = new double[4];
+    int minusType = 1, dType = 2;
     int level;
+    ConstantOfArmys cofArm = new ConstantOfArmys();
 
     public Enemy(int levvel) {
         this.level = levvel;
@@ -22,13 +28,23 @@ public class Enemy {
         for (int i = 0; i < 4; i++) {
             enemysArmy[i] = new ArrayList<Army>();
         }
+        for (int i = 0; i < 4; i++) {
+            timeToGenerate[i] = timeBetweenGenerate;
+        }
     }
+
 
     public void draw(Batch batch, OrthographicCamera camera) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < enemysArmy[i].size(); j++) {
                 enemysArmy[i].get(j).draw(batch, camera);
             }
+        }
+    }
+
+    public void setTimeToGenerate(double dt) {
+        for (int i =0 ;i<4;i++) {
+            timeToGenerate[i] -= dt;
         }
     }
 
@@ -81,11 +97,32 @@ public class Enemy {
         return r;
     }
 
-    public void addMoney() {
+    public void addResource() {
         Money += profit;
+
     }
 
-    public void makeArmy(){
-
+    public void makeArmy(ArrayList<Army> plaerArmy[]) {
+        // возможно if и for нужно поменять местами
+        for (int i = 0; i < 4; i++) {
+            if (timeToGenerate[i] <= 0) {
+                int ptype = new Random().nextInt(dType) - minusType;
+                int l = enemysArmy[i].size();
+                if (l < plaerArmy[i].size()) {
+                    ptype += plaerArmy[i].get(l).typearm;
+                    if (ptype > maxtypeofArmy) {
+                        ptype = maxtypeofArmy;
+                    }
+                    if (ptype < 0) {
+                        ptype = 0;
+                    }
+                } else {
+                    ptype = new Random().nextInt(maxtypeofArmy);
+                }
+                createArmy(i, ptype, 30, 4, 1, cofArm.ArmysSpeed.get(ptype));
+                double time = new Random().nextInt(10000) / 5000 - 1;
+                timeToGenerate[i] = timeBetweenGenerate * (2 + time);
+            }
+        }
     }
 }
