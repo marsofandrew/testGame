@@ -31,6 +31,7 @@ public class TestGameClass extends ApplicationAdapter {
     double profit;
     int level = 0;//test remove later
     ConstantOfArmys cofArm = new ConstantOfArmys();
+
     @Override
 
     public void create() {
@@ -43,7 +44,6 @@ public class TestGameClass extends ApplicationAdapter {
         camera.setToOrtho(false, 480, 800);
         batch = new SpriteBatch();
         background = new Texture("background1.png");
-
 
 
         butCanceled = new MyButton(-1, "bcancel.png", "bcancel.png", 400, 0, 80, 60, 0);
@@ -80,9 +80,9 @@ public class TestGameClass extends ApplicationAdapter {
         for (int i = 0; i < button.size; i++) {
             button.get(i).draw(batch, camera);
         }
-                player.draw(batch,camera);
+        player.draw(batch, camera);
 
-        enem.draw(batch,camera);
+        enem.draw(batch, camera);
 
         butCanceled.draw(batch, camera);
         batch.end();
@@ -110,26 +110,28 @@ public class TestGameClass extends ApplicationAdapter {
 
             }
         }
-        moveArmys(player.playersArmy, true); // move player's army
-        moveArmys(enem.enemysArmy, false); // move enemy's army
+        moveArmys(player.playersArmy, enem.enemysArmy); // move player's army
+        moveArmys(enem.enemysArmy, player.playersArmy);
         removeArmys(player.playersArmy, true);
         removeArmys(enem.enemysArmy, false);
     }
-    public void createEnemyArmy(double dt){
+
+    public void createEnemyArmy(double dt) {
         enem.setTimeToGenerate(dt);
         enem.makeArmy(player.playersArmy);
     }
+
     public void createPlayersArmy(Vector3 posT) {
 
         int butclick = getClicButton(button);
 
         if (Coins - button.get(butclick).price >= 0) {
             Coins -= button.get(butclick).price;
-            player.playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1,cofArm.ArmysSpeed.get(butclick)));
+            player.playersArmy[get_Line(posT.x)].add(new Army(butclick, 30, 4, 1, 1, 1, 1, 1, 1, 1, cofArm.ArmysSpeed.get(butclick)));
             int length = player.playersArmy[get_Line(posT.x)].size();
             player.playersArmy[get_Line(posT.x)].get(length - 1).setX(get_Line(posT.x) * 100 + 10);
             player.playersArmy[get_Line(posT.x)].get(length - 1).setY(40);
-           butCanceled.setiIShow(false);
+            butCanceled.setiIShow(false);
 
         }
         button.get(butclick).deselect();
@@ -187,15 +189,38 @@ public class TestGameClass extends ApplicationAdapter {
         return b;
     }
 
-    public void moveArmys(ArrayList<Army>[] arm, boolean isPlayer) {
+    public void moveArmys(ArrayList<Army>[] arm, ArrayList<Army>[] arm1) {
+        float dy = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < arm[i].size(); j++) {
-                float dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
-                if (isPlayer) {
-                    arm[i].get(j).setY(arm[i].get(j).getY() + dy);
-                } else {
-                    arm[i].get(j).setY(arm[i].get(j).getY() - dy);
+                if (j > 0) {
+                    if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm[i].get(j - 1).rect)) {
+                        if (arm1[i].size() > 0) {
+                            if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm1[i].get(0).rect)) {
+                                dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
+                            } else {
+                                dy = 0;
+                            }
+                        } else {
+                            dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
+                        }
+
+                    } else {
+                        dy = 0;
+                    }
                 }
+                if (j == 0){
+                    if (arm1[i].size() > 0) {
+                        if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm1[i].get(0).rect)) {
+                            dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
+                        } else {
+                            dy = 0;
+                        }
+                    } else {
+                        dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
+                    }
+                }
+                    arm[i].get(j).setY(arm[i].get(j).getY() + dy);
             }
         }
     }
@@ -270,7 +295,7 @@ public class TestGameClass extends ApplicationAdapter {
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Gdx.app.log("My tag", "pan y  = " + y + " delta y = " + deltaY);
-            movePole((float)(deltaY /1.5));
+            movePole((float) (deltaY / 1.5));
             return false;
         }
 

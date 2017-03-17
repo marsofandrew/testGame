@@ -39,10 +39,13 @@ public class Army {
         this.speed = speed;
 
         rect.width = 80;
-        rect.height = 60;
+        rect.height = 64;
         setTexturearm();
     }
 
+    public Rectangle getMoveRect(float t) {
+        return new Rectangle(rect.x, rect.y + t * speed, rect.width, rect.height);
+    }
 
     public void setTexturearm() {
         switch (typearm) {
@@ -68,13 +71,11 @@ public class Army {
     }
 
     public float getX() {
-        float t = this.rect.x;
-        return t;
+        return this.rect.x;
     }
 
     public float getY() {
-        float t = this.rect.y;
-        return t;
+        return this.rect.y;
     }
 
     public int getSoldat() {
@@ -180,7 +181,7 @@ public class Army {
         sb.setProjectionMatrix(camera.combined);
         b.end();
         sb.begin();
-        sb.draw(texturearm, rect.x, rect.y);
+        sb.draw(texturearm, rect.x, rect.y + 2);
         sb.end();
         b.begin();
     }

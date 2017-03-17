@@ -36,8 +36,8 @@ public class Enemy {
 
     public void draw(Batch batch, OrthographicCamera camera) {
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < enemysArmy[i].size(); j++) {
-                enemysArmy[i].get(j).draw(batch, camera);
+            for (Army army:enemysArmy[i]){
+                army.draw(batch,camera);
             }
         }
     }
@@ -119,7 +119,7 @@ public class Enemy {
                 } else {
                     ptype = new Random().nextInt(maxtypeofArmy);
                 }
-                createArmy(i, ptype, 30, 4, 1, cofArm.ArmysSpeed.get(ptype));
+                createArmy(i, ptype, 30, 4, 1, -cofArm.ArmysSpeed.get(ptype));
                 double time = new Random().nextInt(10000) / 5000 - 1;
                 timeToGenerate[i] = timeBetweenGenerate * (2 + time);
             }

@@ -21,8 +21,8 @@ public class Player {
 
     public void draw(Batch batch, OrthographicCamera camera) {
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < playersArmy[i].size(); j++) {
-                playersArmy[i].get(j).draw(batch, camera);
+            for (Army army:playersArmy[i]){
+                army.draw(batch,camera);
             }
         }
     }
