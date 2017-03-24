@@ -119,6 +119,7 @@ public class Enemy {
 
     }
 
+
     private double getkTime(int kolvo) {
         double a = 1 + 0.1 * kolvo;
         return 1/a;
