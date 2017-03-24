@@ -2,6 +2,7 @@ package com.gopea_system.testgame;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,16 +16,19 @@ public class Enemy {
     double Money;
     double tech_bonus = 1;
     ArrayList<Army>[] enemysArmy;
-    int maxtypeofArmy = 1;
-    double timeBetweenGenerate = 2;
+    int maxtypeofArmy = 1, minTypeofArm = 0;
+    double timeBetweenGenerate;
     double timeToGenerate[] = new double[4];
-    int minusType = 1, dType = 2;
+
+
     int level;
+    int maxArmsperLine = 10;
     ConstantOfArmys cofArm = new ConstantOfArmys();
 
     public Enemy(int levvel) {
         this.level = levvel;
         enemysArmy = new ArrayList[4];
+        setTimeBetweenGenerate(levvel);
         for (int i = 0; i < 4; i++) {
             enemysArmy[i] = new ArrayList<Army>();
         }
@@ -36,15 +40,28 @@ public class Enemy {
 
     public void draw(Batch batch, OrthographicCamera camera) {
         for (int i = 0; i < 4; i++) {
-            for (Army army:enemysArmy[i]){
-                army.draw(batch,camera);
+            for (Army army : enemysArmy[i]) {
+                army.draw(batch, camera);
             }
         }
     }
 
     public void setTimeToGenerate(double dt) {
-        for (int i =0 ;i<4;i++) {
+        for (int i = 0; i < 4; i++) {
             timeToGenerate[i] -= dt;
+        }
+    }
+
+    private void setTimeBetweenGenerate(int lev) {
+        timeBetweenGenerate = 3;
+        switch (lev) {
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            default:
         }
     }
 
@@ -102,26 +119,32 @@ public class Enemy {
 
     }
 
+    private double getkTime(int kolvo) {
+        double a = 1 + 0.1 * kolvo;
+        return 1/a;
+    }
+
     public void makeArmy(ArrayList<Army> plaerArmy[]) {
         // возможно if и for нужно поменять местами
         for (int i = 0; i < 4; i++) {
-            if (timeToGenerate[i] <= 0) {
-                int ptype = new Random().nextInt(dType) - minusType;
-                int l = enemysArmy[i].size();
-                if (l < plaerArmy[i].size()) {
-                    ptype += plaerArmy[i].get(l).typearm;
-                    if (ptype > maxtypeofArmy) {
-                        ptype = maxtypeofArmy;
+            if (enemysArmy[i].size() < maxArmsperLine) {
+                if (timeToGenerate[i] <= 0) {
+                    int ptype = MathUtils.random(-2, 2);
+                    int l = enemysArmy[i].size();
+                    if (l < plaerArmy[i].size()) {
+                        ptype += plaerArmy[i].get(l).typearm;
+                        if (ptype > maxtypeofArmy) {
+                            ptype = maxtypeofArmy;
+                        }
+                        if (ptype < minTypeofArm) {
+                            ptype = minTypeofArm;
+                        }
+                    } else {
+                        ptype = new Random().nextInt(maxtypeofArmy);
                     }
-                    if (ptype < 0) {
-                        ptype = 0;
-                    }
-                } else {
-                    ptype = new Random().nextInt(maxtypeofArmy);
+                    createArmy(i, ptype, 30, 4, 1, -cofArm.ArmysSpeed.get(ptype));
+                    timeToGenerate[i] = timeBetweenGenerate * MathUtils.random(1.0f, 2.0f) * getkTime(plaerArmy[i].size());
                 }
-                createArmy(i, ptype, 30, 4, 1, -cofArm.ArmysSpeed.get(ptype));
-                double time = new Random().nextInt(10000) / 5000 - 1;
-                timeToGenerate[i] = timeBetweenGenerate * (2 + time);
             }
         }
     }
