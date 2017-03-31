@@ -18,9 +18,13 @@ public class Army {
     double tecnologies_bonus;
     float speed;
     Rectangle rect = new Rectangle();
-
+    float fightRadius = 2;
     Texture texturearm;
 
+    /*
+        Сделать передачу специального файла, в котором хранится информация о бонусах для армий, сделать это вместо
+        double technoliges_bonus
+     */
     /*
     Standart army = 35 (30 soldat, 3(4) - serjant, 1(2) - officer)
      */
@@ -39,7 +43,7 @@ public class Army {
         this.speed = speed;
 
         rect.width = 80;
-        rect.height = 64;
+        rect.height = 62;
         setTexturearm();
     }
 
@@ -47,7 +51,15 @@ public class Army {
         return new Rectangle(rect.x, rect.y + t * speed, rect.width, rect.height);
     }
 
-    public void setTexturearm() {
+    public Rectangle getFightRect() {
+        return new Rectangle(rect.x, rect.y, rect.width, rect.height + fightRadius);
+    }
+
+    public int getSostav() {
+        return soldat + serjant + officer;
+    }
+
+    private void setTexturearm() {
         switch (typearm) {
             case 0:
                 texturearm = new Texture("irregular.png");
@@ -70,6 +82,10 @@ public class Army {
         this.speed = speed1;
     }
 
+    public void setFightRadius() {
+
+    }
+
     public float getX() {
         return this.rect.x;
     }
@@ -79,18 +95,15 @@ public class Army {
     }
 
     public int getSoldat() {
-        int getsold = soldat;
-        return getsold;
+        return soldat;
     }
 
     public int getSerjant() {
-        int getserjant = serjant;
-        return getserjant;
+        return serjant;
     }
 
     public int getOfficer() {
-        int getsold = officer;
-        return getsold;
+        return officer;
     }
 
     public void setSostav(int soldat, int serjant, int officer) {
@@ -99,13 +112,12 @@ public class Army {
         this.officer = officer;
     }
 
-    public int grtFightTime() {
-        int t = fighttime;
-        return t;
+    public int getFightTime() {
+        return fighttime;
     }
 
-    public void setFighttime(int fightime) {
-        this.fighttime = fightime;
+    public void addFighttime(int fightime) {
+        this.fighttime += fightime;
     }
 
     /*
@@ -125,7 +137,7 @@ public class Army {
         return Dis;
     }
 
-    public double K_Level() {
+    private double K_Level() {
         double K_lev = -1;
         switch (Level_of_army) {
             case 1:
@@ -165,7 +177,7 @@ public class Army {
         return K_lev;
     }
 
-    public double Ustalost() {
+    private double Ustalost() {
         double Ust = Math.pow(Math.E, (fighttime / 40)) / 2.5 + 0.6;
         if (Ust < 0) {
             /*
@@ -181,7 +193,7 @@ public class Army {
         sb.setProjectionMatrix(camera.combined);
         b.end();
         sb.begin();
-        sb.draw(texturearm, rect.x, rect.y + 2);
+        sb.draw(texturearm, rect.x, rect.y + 1);
         sb.end();
         b.begin();
     }

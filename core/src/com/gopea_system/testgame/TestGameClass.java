@@ -31,6 +31,7 @@ public class TestGameClass extends ApplicationAdapter {
     double profit;
     int level = 0;//test remove later
     ConstantOfArmys cofArm = new ConstantOfArmys();
+    Fight fight = new Fight();
 
     @Override
 
@@ -110,10 +111,17 @@ public class TestGameClass extends ApplicationAdapter {
 
             }
         }
+
         moveArmys(player.playersArmy, enem.enemysArmy); // move player's army
         moveArmys(enem.enemysArmy, player.playersArmy);
+        for (int m = 0; m < 4; m++) {
+            if (player.playersArmy[m].size() > 0 & enem.enemysArmy[m].size() > 0) {
+                fight.fightArm(player.playersArmy[m], enem.enemysArmy[m]);
+            }
+        }
         removeArmys(player.playersArmy, true);
         removeArmys(enem.enemysArmy, false);
+
     }
 
     public void createEnemyArmy(double dt) {
@@ -195,32 +203,29 @@ public class TestGameClass extends ApplicationAdapter {
             for (int j = 0; j < arm[i].size(); j++) {
                 if (j > 0) {
                     if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm[i].get(j - 1).rect)) {
-                        if (arm1[i].size() > 0) {
-                            if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm1[i].get(0).rect)) {
-                                dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
-                            } else {
-                                dy = 0;
-                            }
-                        } else {
-                            dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
-                        }
-
+                        dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
                     } else {
-                        dy = 0;
+                        dy = (arm[i].get(j - 1).getY() > arm[i].get(j).getY()) ? (arm[i].get(j - 1).getY() -
+                                (arm[i].get(j).getY() + arm[i].get(j).rect.height)) :
+                                (arm[i].get(j - 1).getY() + arm[i].get(j - 1).rect.height - arm[i].get(j).getY());
                     }
                 }
-                if (j == 0){
+                if (j == 0) {
                     if (arm1[i].size() > 0) {
                         if (!arm[i].get(j).getMoveRect(Gdx.graphics.getDeltaTime()).overlaps(arm1[i].get(0).rect)) {
                             dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
                         } else {
-                            dy = 0;
+                            dy = (arm1[i].get(0).getY() > arm[i].get(0).getY()) ? (arm1[i].get(0).getY() -
+                                    (arm[i].get(0).getY() + arm[i].get(0).rect.height)) :
+                                    (arm1[i].get(0).getY() + arm1[i].get(0).rect.height -
+                                            arm[i].get(0).getY());
+
                         }
                     } else {
                         dy = arm[i].get(j).speed * Gdx.graphics.getDeltaTime();
                     }
                 }
-                    arm[i].get(j).setY(arm[i].get(j).getY() + dy);
+                arm[i].get(j).setY(arm[i].get(j).getY() + dy);
             }
         }
     }
